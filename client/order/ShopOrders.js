@@ -1,31 +1,33 @@
-import React, {Component} from 'react'
+import React, {useState, useEffect} from 'react'
 import PropTypes from 'prop-types'
-import {withStyles} from 'material-ui/styles'
-import Paper from 'material-ui/Paper'
-import List, {ListItem, ListItemText} from 'material-ui/List'
-import Typography from 'material-ui/Typography'
-import ExpandLess from 'material-ui-icons/ExpandLess'
-import ExpandMore from 'material-ui-icons/ExpandMore'
-import Collapse from 'material-ui/transitions/Collapse'
-import Divider from 'material-ui/Divider'
+import { makeStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import List from '@material-ui/core/List'
+import ListItem from '@material-ui/core/ListItem'
+import ListItemText from '@material-ui/core/ListItemText'
+import Typography from '@material-ui/core/Typography'
+import ExpandLess from '@material-ui/icons/ExpandLess'
+import ExpandMore from '@material-ui/icons/ExpandMore'
+import Collapse from '@material-ui/core/Collapse'
+import Divider from '@material-ui/core/Divider'
 import auth from './../auth/auth-helper'
 import {listByShop} from './api-order.js'
 import ProductOrderEdit from './ProductOrderEdit'
 
-const styles = theme => ({
+const useStyles = makeStyles(theme => ({
   root: theme.mixins.gutters({
     maxWidth: 600,
     margin: 'auto',
-    padding: theme.spacing.unit * 3,
-    marginTop: theme.spacing.unit * 5
+    padding: theme.spacing(3),
+    marginTop: theme.spacing(5)
   }),
   title: {
-    margin: `${theme.spacing.unit * 3}px 0 ${theme.spacing.unit * 3}px ${theme.spacing.unit}px` ,
+    margin: `${theme.spacing(3)}px 0 ${theme.spacing(3)}px ${theme.spacing(1)}px` ,
     color: theme.palette.protectedTitle,
     fontSize: '1.2em'
   },
   subheading: {
-    marginTop: theme.spacing.unit,
+    marginTop: theme.spacing(1),
     color: '#434b4e',
     fontSize: '1.1em'
   },
@@ -34,45 +36,41 @@ const styles = theme => ({
     paddingTop: '16px',
     backgroundColor:'#f8f8f8'
   }
-})
-class ShopOrders extends Component {
-  constructor({match}) {
-    super()
-    this.state = {
-      open: 0,
-      orders:[]
-    }
-    this.match = match
-  }
-  loadOrders = () => {
+}))
+export default function ShopOrders({match}) {
+  const classes = useStyles()
+  const [orders, setOrders] = useState([])
+  const [open, setOpen] = useState(0)
+
+
     const jwt = auth.isAuthenticated()
-    listByShop({
-      shopId: this.match.params.shopId
-    }, {t: jwt.token}).then((data) => {
-      if (data.error) {
-        console.log(data)
-      } else {
-        this.setState({orders: data})
+    useEffect(() => {
+      const abortController = new AbortController()
+      const signal = abortController.signal
+      listByShop({
+        shopId: match.params.shopId
+      }, {t: jwt.token}, signal).then((data) => {
+        if (data.error) {
+          console.log(data)
+        } else {
+          setOrders(data)
+        }
+      })
+      return function cleanup(){
+        abortController.abort()
       }
-    })
+    }, [])
+
+  const handleClick = index => event => {
+    setOpen(index)
   }
 
-  componentDidMount = () => {
-    this.loadOrders()
-  }
-
-  handleClick = index => event => {
-    this.setState({open: index})
-  }
-
-  updateOrders = (index, updatedOrder) => {
-    let orders = this.state.orders
+  const updateOrders = (index, updatedOrder) => {
+    let orders = orders
     orders[index] = updatedOrder
-    this.setState({orders: orders})
+    setOrders(orders)
   }
 
-  render() {
-    const {classes} = this.props
     return (
     <div>
       <Paper className={classes.root} elevation={4}>
@@ -103,11 +101,4 @@ class ShopOrders extends Component {
         </List>
       </Paper>
     </div>)
-  }
 }
-
-ShopOrders.propTypes = {
-  classes: PropTypes.object.isRequired
-}
-
-export default withStyles(styles)(ShopOrders)
