@@ -16,33 +16,20 @@ const useStyles = makeStyles(theme => ({
 export default function Cart () {
   const classes = useStyles()
   const [checkout, setCheckout] = useState(false)
-  const [stripe, setStripe] = useState(null)
 
-
-  useEffect(() => {
-    if (window.Stripe) {
-      setStripe({stripe: window.Stripe(config.stripe_test_api_key)})
-    } else {
-      document.querySelector('#stripe-js').addEventListener('load', () => {
-        // Create Stripe instance once Stripe.js loads
-        setStripe({stripe: window.Stripe(config.stripe_test_api_key)})
-      })
-    }
-  }, [])
-
-  const saveCheckout = val =>{
-    setCheckout({checkout: val})
+  const showCheckout = val => {
+    setCheckout(val)
   }
 
     return (<div className={classes.root}>
       <Grid container spacing={8}>
         <Grid item xs={6} sm={6}>
           <CartItems checkout={checkout}
-                     setCheckout={saveCheckout}/>
+                     setCheckout={showCheckout}/>
         </Grid>
         {checkout &&
           <Grid item xs={6} sm={6}>
-            <StripeProvider stripe={stripe}>
+            <StripeProvider apiKey={config.stripe_test_api_key}>
               <Checkout/>
             </StripeProvider>
           </Grid>}

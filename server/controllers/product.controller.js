@@ -1,5 +1,5 @@
 import Product from '../models/product.model'
-import _ from 'lodash'
+import extend from 'lodash/extend'
 import errorHandler from './../helpers/dbErrorHandler'
 import formidable from 'formidable'
 import fs from 'fs'
@@ -73,7 +73,7 @@ const update = (req, res) => {
       })
     }
     let product = req.product
-    product = _.extend(product, fields)
+    product = extend(product, fields)
     product.updated = Date.now()
     if(files.image){
       product.image.data = fs.readFileSync(files.image.path)

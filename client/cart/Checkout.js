@@ -43,23 +43,17 @@ const useStyles = makeStyles(theme => ({
 }))
 
 export default function Checkout (){
-  const classes = useStyles();
+  const classes = useStyles()
+  const user = auth.isAuthenticated().user
   const [values, setValues] = useState({
     checkoutDetails: {
-      customer_name: '',
-      customer_email:'',
+      products: cart.getCart(),
+      customer_name: user.name,
+      customer_email:user.email,
       delivery_address: { street: '', city: '', state: '', zipcode: '', country:''}
     },
     error: ''
   })
-  useEffect(() => {
-    let user = auth.isAuthenticated().user
-    let checkoutDetails = values.checkoutDetails
-    checkoutDetails.products = cart.getCart()
-    checkoutDetails.customer_name = user.name
-    checkoutDetails.customer_email = user.email
-    setValues({...values, checkoutDetails: checkoutDetails})
-  }, [])
 
   const handleCustomerChange = name => event => {
     let checkoutDetails = values.checkoutDetails

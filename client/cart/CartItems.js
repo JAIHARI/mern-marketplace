@@ -102,7 +102,7 @@ export default function CartItems (props) {
     }else{
       updatedCartItems[index].quantity = event.target.value
     }
-    setCartItems(updatedCartItems)
+    setCartItems([...updatedCartItems])
     cart.updateCart(index, event.target.value)
   }
 
@@ -178,7 +178,7 @@ export default function CartItems (props) {
           </Link>
         </div>
       </span>) :
-      <Typography type="subheading" component="h3" color="primary">No items added to your cart.</Typography>
+      <Typography variant="subtitle1" component="h3" color="primary">No items added to your cart.</Typography>
     }
     </Card>)
 }

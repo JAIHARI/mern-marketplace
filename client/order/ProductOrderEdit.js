@@ -68,58 +68,78 @@ export default function ProductOrderEdit (props){
     order.products[productIndex].status = event.target.value
     let product = order.products[productIndex]
 
-    if(event.target.value == "Cancelled"){
-        cancelProduct({
-            shopId: props.shopId,
-            productId: product.product._id
-          },
-          {t: jwt.token},
-          { cartItemId: product._id,
-            status: event.target.value,
-            quantity: product.quantity
-          })
-          .then((data) => {
-              if (data.error) {
-                setValues({...values, error: "Status not updated, try again"})
-              } else {
-                props.updateOrders(props.orderIndex, order)
-                setValues({...values, error: ''})
-              }
-          })
-    }else if(event.target.value == "Processing"){
-        processCharge({
-            userId: jwt.user._id,
-            shopId: props.shopId,
-            orderId: order._id
-          },
-          {t: jwt.token},
-          { cartItemId: product._id,
-            status: event.target.value,
-            amount: (product.quantity * product.product.price)
-          })
-          .then((data) => {
-              if (data.error) {
-                setValues({...values, error: "Status not updated, try again"})
-              } else {
-                props.updateOrders(props.orderIndex, order)
-                setValues({...values, error: ''})
-              }
-          })
-    }
-    else{
-        update({
+    if (event.target.value == "Cancelled") {
+      cancelProduct({
+          shopId: props.shopId,
+          productId: product.product._id
+        }, {
+          t: jwt.token
+        }, {
+          cartItemId: product._id,
+          status: event.target.value,
+          quantity: product.quantity
+        })
+        .then((data) => {
+          if (data.error) {
+            setValues({
+              ...values,
+              error: "Status not updated, try again"
+            })
+          } else {
+            props.updateOrders(props.orderIndex, order)
+            setValues({
+              ...values,
+              error: ''
+            })
+          }
+        })
+    } else if (event.target.value == "Processing") {
+      processCharge({
+          userId: jwt.user._id,
+          shopId: props.shopId,
+          orderId: order._id
+        }, {
+          t: jwt.token
+        }, {
+          cartItemId: product._id,
+          status: event.target.value,
+          amount: (product.quantity * product.product.price)
+        })
+        .then((data) => {
+          if (data.error) {
+            setValues({
+              ...values,
+              error: "Status not updated, try again"
+            })
+          } else {
+            props.updateOrders(props.orderIndex, order)
+            setValues({
+              ...values,
+              error: ''
+            })
+          }
+        })
+    } else {
+      update({
           shopId: props.shopId
-        },
-        {t: jwt.token},
-        { cartItemId: product._id,
+        }, {
+          t: jwt.token
+        }, {
+          cartItemId: product._id,
           status: event.target.value
         })
         .then((data) => {
           if (data.error) {
-            setValues({...values, error: "Status not updated, try again"})
+            setValues({
+              ...values,
+              error: "Status not updated, try again"
+            })
           } else {
             props.updateOrders(props.orderIndex, order)
-            setValues({...values, error: ''})
+            setValues({
+              ...values,
+              error: ''
+            })
           }
         })
     }

@@ -1,5 +1,4 @@
 import React, {useState, useEffect} from 'react'
-import PropTypes from 'prop-types'
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import List from '@material-ui/core/List'
@@ -66,26 +65,26 @@ export default function ShopOrders({match}) {
   }
 
   const updateOrders = (index, updatedOrder) => {
-    let orders = orders
-    orders[index] = updatedOrder
-    setOrders(orders)
+    let updatedOrders = orders
+    updatedOrders[index] = updatedOrder
+    setOrders([...updatedOrders])
   }
 
     return (
     <div>
       <Paper className={classes.root} elevation={4}>
         <Typography type="title" className={classes.title}>
-          Orders in {this.match.params.shop}
+          Orders in {match.params.shop}
         </Typography>
         <List dense >
-          {this.state.orders.map((order, index) => {
+          {orders.map((order, index) => {
             return   <span key={index}>
-              <ListItem button onClick={this.handleClick(index)}>
+              <ListItem button onClick={handleClick(index)}>
                 <ListItemText primary={'Order # '+order._id} secondary={(new Date(order.created)).toDateString()}/>
-                {this.state.open == index ? <ExpandLess /> : <ExpandMore />}
+                {open == index ? <ExpandLess /> : <ExpandMore />}
               </ListItem><Divider/>
-              <Collapse component="li" in={this.state.open == index} timeout="auto" unmountOnExit>
-                <ProductOrderEdit shopId={this.match.params.shopId} order={order} orderIndex={index} updateOrders={this.updateOrders}/>
+              <Collapse component="li" in={open == index} timeout="auto" unmountOnExit>
+                <ProductOrderEdit shopId={match.params.shopId} order={order} orderIndex={index} updateOrders={updateOrders}/>
                 <div className={classes.customerDetails}>
                   <Typography type="subheading" component="h3" className={classes.subheading}>
                     Deliver to:

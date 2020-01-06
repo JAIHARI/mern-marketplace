@@ -1,5 +1,5 @@
 import Shop from '../models/shop.model'
-import _ from 'lodash'
+import extend from 'lodash/extend'
 import errorHandler from './../helpers/dbErrorHandler'
 import formidable from 'formidable'
 import fs from 'fs'
@@ -73,7 +73,7 @@ const update = (req, res) => {
       })
     }
     let shop = req.shop
-    shop = _.extend(shop, fields)
+    shop = extend(shop, fields)
     shop.updated = Date.now()
     if(files.image){
       shop.image.data = fs.readFileSync(files.image.path)

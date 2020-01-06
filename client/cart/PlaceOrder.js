@@ -46,7 +46,7 @@ const PlaceOrder = (props) => {
     orderId: ''
   })
 
-  placeOrder = ()=>{
+  const placeOrder = ()=>{
     props.stripe.createToken().then(payload => {
       if(payload.error){
         setValues({...values, error: payload.error.message})
